@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+src/calendar_gateway/__init__.py
+src/calendar_gateway/calendar_client.py
+src/calendar_gateway/google_auth.py
+src/calendar_mcp_gateway.egg-info/PKG-INFO
+src/calendar_mcp_gateway.egg-info/SOURCES.txt
+src/calendar_mcp_gateway.egg-info/dependency_links.txt
+src/calendar_mcp_gateway.egg-info/requires.txt
+src/calendar_mcp_gateway.egg-info/top_level.txt

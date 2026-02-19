@@ -1,0 +1,13 @@
+# secrets / tokens
+credentials.json
+token.json
+*.env
+
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# logs
+*.log
+audit_log.jsonl
