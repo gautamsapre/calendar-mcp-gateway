@@ -1,0 +1,2 @@
+[console_scripts]
+calendar-mcp = calendar_gateway.mcp_server:main

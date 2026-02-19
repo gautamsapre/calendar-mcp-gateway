@@ -78,3 +78,7 @@ class CalendarClient:
         )
 
         return created
+    
+    def delete_event(self, event_id: str) -> None:
+        service = self._service_client()
+        service.events().delete(calendarId=self.calendar_id, eventId=event_id, sendUpdates="none").execute()

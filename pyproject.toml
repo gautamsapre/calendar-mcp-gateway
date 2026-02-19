@@ -1,13 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "calendar-mcp-gateway"
-version = "0.1.0"
-description = "A safe capability gateway for calendar operations (Google Calendar integration)."
+version = "0.2.0"
+description = "A capability gateway that safely performs calendar operations using Google Calendar and exposes them via MCP."
+readme = "README.md"
 requires-python = ">=3.10"
+authors = [
+  { name = "Gautam Sapre" }
+]
+
 dependencies = [
-  "google-api-python-client>=2.0.0",
+  "google-api-python-client>=2.120.0",
   "google-auth-httplib2>=0.2.0",
   "google-auth-oauthlib>=1.2.0",
+  "mcp>=1.2.0",
 ]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+# This creates a real CLI command:
+# you will be able to run `calendar-mcp`
+[project.scripts]
+calendar-mcp = "calendar_gateway.mcp_server:main"
