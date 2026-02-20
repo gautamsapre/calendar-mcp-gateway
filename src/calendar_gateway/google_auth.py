@@ -3,7 +3,10 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
-DEFAULT_SCOPES = ["https://www.googleapis.com/auth/calendar"]
+DEFAULT_SCOPES = [
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/contacts.readonly",
+]
 
 def get_credentials(
     scopes=DEFAULT_SCOPES,

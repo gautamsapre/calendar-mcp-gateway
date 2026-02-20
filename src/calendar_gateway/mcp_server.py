@@ -15,6 +15,8 @@ warnings.filterwarnings("ignore", category=FutureWarning, module=r"google\.api_c
 
 
 from calendar_gateway.calendar_client import CalendarClient
+from calendar_gateway.google_auth import get_credentials
+from calendar_gateway.people_client import PeopleClient
 
 mcp = FastMCP("calendar-gateway")
 
@@ -182,6 +184,27 @@ def approve_cancel(pending_id: str) -> Dict[str, Any]:
 
     _audit({"tool": "approve_cancel", "pending_id": pending_id, "event_id": item["event_id"], "status": "executed"})
     return {"status": "executed", "event_id": item["event_id"]}
+
+def _people() -> PeopleClient:
+    creds = get_credentials()  # uses your shared token.json
+    return PeopleClient(creds)
+
+@mcp.tool()
+def resolve_contact(name: str, max_results: int = 5) -> Dict[str, Any]:
+    """
+    Resolve a human name to likely email addresses (ranked).
+    Safe tool: read-only, but still audited.
+    """
+    p = _people()
+    matches = p.search_contacts(query=name, page_size=max_results)
+
+    _audit({"tool": "resolve_contact", "query": name, "count": len(matches)})
+
+    return {
+        "query": name,
+        "matches": matches,
+        "rule": "If multiple matches are returned, ask the user to confirm which email to use before inviting.",
+    }
 
 @mcp.tool()
 def ping() -> str:
