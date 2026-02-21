@@ -72,7 +72,7 @@ class CalendarClient:
                 calendarId=self.calendar_id,
                 body=event,
                 conferenceDataVersion=1,  # required for creating/persisting conference details
-                sendUpdates="none",       # change to "all" if you want Google to email invites
+                sendUpdates="all",       # change to "all" if you want Google to email invites
             )
             .execute()
         )
@@ -81,4 +81,4 @@ class CalendarClient:
     
     def delete_event(self, event_id: str) -> None:
         service = self._service_client()
-        service.events().delete(calendarId=self.calendar_id, eventId=event_id, sendUpdates="none").execute()
+        service.events().delete(calendarId=self.calendar_id, eventId=event_id, sendUpdates="all").execute()

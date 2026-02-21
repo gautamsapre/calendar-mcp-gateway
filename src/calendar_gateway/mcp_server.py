@@ -23,6 +23,21 @@ mcp = FastMCP("calendar-gateway")
 PENDING_FILE = os.path.join(os.getcwd(), "pending_cancels.json")
 AUDIT_FILE = os.path.join(os.getcwd(), "audit_log.jsonl")
 
+from pathlib import Path
+
+def _data_dir() -> Path:
+    # Allow override if you ever want it
+    base = os.environ.get("CALGW_DATA_DIR")
+    if base:
+        p = Path(base).expanduser()
+    else:
+        p = Path.home() / ".calendar-mcp-gateway"
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+DATA_DIR = _data_dir()
+PENDING_FILE = str(DATA_DIR / "pending_cancels.json")
+AUDIT_FILE = str(DATA_DIR / "audit_log.jsonl")
 
 def _audit(event: Dict[str, Any]) -> None:
     event = {**event, "ts": time.time()}
@@ -33,8 +48,11 @@ def _audit(event: Dict[str, Any]) -> None:
 def _load_pending() -> Dict[str, Any]:
     if not os.path.exists(PENDING_FILE):
         return {}
-    with open(PENDING_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(PENDING_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        return {}
 
 
 def _save_pending(data: Dict[str, Any]) -> None:

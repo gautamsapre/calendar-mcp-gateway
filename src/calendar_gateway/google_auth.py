@@ -8,17 +8,20 @@ DEFAULT_SCOPES = [
     "https://www.googleapis.com/auth/contacts.readonly",
 ]
 
+# ✅ Always locate creds relative to this file, not the current working directory
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+_DEFAULT_CREDENTIALS_PATH = os.path.join(_BASE_DIR, "..", "..", "credentials.json")
+_DEFAULT_TOKEN_PATH = os.path.join(_BASE_DIR, "..", "..", "token.json")
+
 def get_credentials(
     scopes=DEFAULT_SCOPES,
-    credentials_path: str = "credentials.json",
-    token_path: str = "token.json",
+    credentials_path: str = _DEFAULT_CREDENTIALS_PATH,
+    token_path: str = _DEFAULT_TOKEN_PATH,
 ):
-    """
-    Loads credentials from token.json (refreshing if needed) or performs a local OAuth flow.
-    This is intended for local developer bootstrap; production deployments should use a
-    service account / domain-wide delegation where applicable.
-    """
     creds = None
+    credentials_path = os.path.abspath(credentials_path)
+    token_path = os.path.abspath(token_path)
+
     if os.path.exists(token_path):
         creds = Credentials.from_authorized_user_file(token_path, scopes)
 
@@ -26,6 +29,11 @@ def get_credentials(
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
+            if not os.path.exists(credentials_path):
+                raise FileNotFoundError(
+                    f"Missing credentials.json at: {credentials_path}. "
+                    f"Put your OAuth client file there (or pass credentials_path)."
+                )
             flow = InstalledAppFlow.from_client_secrets_file(credentials_path, scopes)
             creds = flow.run_local_server(port=0)
 
